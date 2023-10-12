@@ -1,0 +1,26 @@
+[Unit]
+Description=Cloud coverage labeling web-app
+ConditionPathExists=/var/www/html/camrec_sandbox/cclabels/bin/cclabels
+After=network.target
+ 
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+#ExecStart=/var/www/html/camrec_sandbox/cclabels/bin/cclabels
+#ExecStart=/bin/bash -c "PATH=/var/www/html/camrec_sandbox/:$PATH exec /var/www/html/camrec_sandbox/cclabels/bin/cclabels"
+ExecStart=docker run -v /lustre:/lustre -v /var/www/html/camrec_sandbox:/var/www/html/camrec_sandbox -p 25260:25260  registry.met.no/modellprod/cclabels:v0.0.1 /usr/local/bin/cclabels --dbfile /var/www/html/camrec_sandbox/cams.db
+# make sure log directory exists and owned by syslog
+PermissionsStartOnly=true
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cclabels
+ 
+[Install]
+WantedBy=multi-user.target

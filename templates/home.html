@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+		<head>
+			<title>{{.Title}}</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+
+
+		</head>
+		<body>
+		<div style='min-height: 98vh; display: flex; flex-direction: column;'>
+			<h1> {{.H1}} </h1>
+			
+			<div style='display: flex; justify-content: flex-end;'>Logged in as &nbsp; <strong>{{.User.UserName}}</strong>&nbsp; <a href="/{{.AppRoot}}/logout">logout</a></div>
+			<br>
+
+			<ul>
+				<li><a href="/roadlabels/camlist"> Camera Listing</a></li>
+				<li><a href="/roadlabels/allcams"> List of recent images from all cams</a></li>
+				<li><a href="/roadlabels/showlabels"> View annotated images</a></li>
+				<li><a href="/roadlabels/iceinfrost"> Random list of images from stations with ice in frost</a></li>
+			  </ul> 
+			  
+			<script src="/roadlabels/js/chart-3.7.1/chart.min.js"></script>
+
+			<div class="chartBox">
+				<canvas  id="myChart"></canvas>
+			</div>
+			
+			<script>
+				// Taken from here: https://leimao.github.io/blog/JavaScript-ChartJS-Histogram/
+			const x_vals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+			const y_vals = {{index .Any 0}};
+			const data = x_vals.map((k, i) => ({x: k, y: y_vals[i]}));
+			
+
+			const backgroundColor = Array(x_vals.length).fill('rgba(255, 99, 132, 0.2)');
+			const borderColor = Array(x_vals.length).fill('rgba(255, 99, 132, 1)');
+			
+			backgroundColor[parseInt(x_vals.length / 2)] = 'rgba(54, 162, 235, 0.2)';
+			borderColor[parseInt(x_vals.length / 2)] = 'rgba(54, 162, 235, 1)';
+			
+			const ctx = document.getElementById('myChart').getContext('2d');
+	
+			const myChart = new Chart(ctx, {
+				//options: {  
+				//	responsive: true,
+				//	maintainAspectRatio: false
+				//},
+				type: 'bar',
+				data: {
+					labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+					datasets: [{
+						label: 'Label Count',
+						data: data,
+						backgroundColor: backgroundColor,
+						borderColor: borderColor,
+						borderWidth: 1,
+						barPercentage: 1,
+						categoryPercentage: 1,
+						borderRadius: 5,
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							type: 'linear',
+							offset: false,
+							grid: {
+								offset: false
+							},
+							ticks: {
+								stepSize: 1
+							},
+							title: {
+								display: true,
+								text: '{{index .Any 1}}',
+								font: {
+									size: 14
+								}
+							}
+						}, 
+						y: {
+							// beginAtZero: true
+							title: {
+								display: true,
+								text: 'Label Count',
+								font: {
+									size: 14
+								}
+							}
+						}
+					},
+					plugins: {
+						legend: {
+							display: false,
+						},
+						tooltip: {
+						callbacks: {
+							title: (items) => {
+							if (!items.length) {
+								console.log("EMPTY")
+								return '';
+							}
+							const item = items[0];
+							const x = item.parsed.x;
+							return `Label No: ${x} `;
+							}
+						}
+						}
+					}
+				}
+			});
+
+
+			var canvasP = document.getElementById("myChart");
+			canvasP.onclick = function(e) {
+				var slice = myChart.getElementsAtEventForMode(e, 'nearest', {intersect: true}, true);
+				var host = window.location.host; 
+				if (!slice.length) return; // return if not clicked on slice
+				var label = myChart.data.labels[slice[0].index];
+				document.location.href=location.protocol + '//' + host + "/roadlabels/showlabels?label="+ label
+			}
+			</script>
+									
+						<footer style='display: flex;
+						align-items: flex-end;
+						flex: 1 1 auto;'>
+						version {{.Version}} {{.BuildTime}}
+						</footer>
+					</div>
+
+
+					<style type="text/css">
+						.chartBox {
+						height:50em;
+						margin: auto;
+						}
+					</style>
+
+
+
+		</body>
+		</html>

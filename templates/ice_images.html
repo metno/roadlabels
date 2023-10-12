@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show image labels</title>
+    <link rel="stylesheet" href="css/scroller.css">
+</head>
+
+<body>
+    <div class="reset-style">
+		<br/>
+		<div style='float: right;'>Logged in as <strong>{{.User.UserName}}</strong> <a href="/roadlabels/logout"> logout </a> </div>
+		<a href="/roadlabels">Home</a>
+		</div>
+		<br /> <br />
+    <h2> Images with ice in frost. (Infinite scroll)</h2>
+
+    {{ .InfoHtml }}
+    <div class="container">
+        <h1></h1>
+        <div class="quotes">
+
+        </div>
+        <div class="loader">
+        
+        </div>
+    </div>
+    <script src="js/scroll-ice-images.js"></script>
+</body>
+
+</html>
