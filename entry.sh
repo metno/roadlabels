@@ -2,12 +2,12 @@
 echo "Docker.entry.sh"
 set -e
 
-#if [ ! -e  /var/lib/roadlabels/roadcams.db ]
-#then
+if [ ! -e  /var/lib/roadlabels/roadcams.db ]
+then
     cp -v /roadlabels/roadcams.db /var/lib/roadlabels/roadcams.db
-#else 
-#    echo /var/lib/roadlabels/roadcams.db exist. Skip copy 
-#fi
+else 
+    echo /var/lib/roadlabels/roadcams.db exist. Skip copy 
+fi
 
 if [ ! -e  /var/lib/roadlabels/users.db ]
 then
