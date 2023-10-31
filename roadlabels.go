@@ -615,7 +615,7 @@ func camlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 		<div style='float: right;'>Logged in as %s <a href="/%s/logout"> logout </a> </div>
 		<a href="/roadlabels">Home</a> 
 		<table border="1">
-		<tr><td style="width:6em">Camid</td><td>SVV Id</td><td>Municipality</td><td>Name</td><td>Lat.</td><td>Lon.</td><td># of lables</td><td>Camera Status</td></tr>
+		<tr><td style="width:6em">Camid</td><td>SVV Id</td><td>Municipality</td><td>Road No<td/><td>Name</td><td>Lat.</td><td>Lon.</td><td># of lables</td><td>Camera Status</td></tr>
 	`, user, appRoot)
 	fmt.Fprintf(w, "\n")
 
@@ -624,8 +624,15 @@ func camlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 		q := startDate.Format("2006/01/02/") + strconv.Itoa(cams[i].cam.ID)
 		fmt.Fprintf(w, "<tr>")
 
-		fmt.Fprintf(w, `<td>Id: %d.</td><td>%s</td><td>%s</td><td><a href="/roadlabels/thumbs?q=%s">%s</a></td>`, cams[i].cam.ID, cams[i].cam.ForeignID, cams[i].cam.Municipality, q, cams[i].cam.Name)
-		fmt.Fprintf(w, `<td>%.02f</td><td>%.02f</td><td align="center">%d</td><td>%s</td>`+"\n",
+		fmt.Fprintf(w, `<td>Id: %d.</td>
+						<td>%s</td>
+						<td>%s</td>
+						<td><a href="/roadlabels/thumbs?q=%s">%s</a></td>
+						<td>%s</td>`, cams[i].cam.ID, cams[i].cam.ForeignID, cams[i].cam.Municipality, q, cams[i].cam.RoadNumber, cams[i].cam.Name)
+		fmt.Fprintf(w, `<td>%.02f</td>
+						<td>%.02f</td>
+						<td align="center">%d</td>
+						<td>%s</td>`+"\n",
 			cams[i].cam.Latitude, cams[i].cam.Longitude, cams[i].labelCount, cams[i].cam.Status)
 		fmt.Fprintf(w, "</tr>")
 
