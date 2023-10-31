@@ -24,6 +24,7 @@ import (
 	"github.com/metno/objectstore-stuff/objectstore"
 	"github.com/metno/roadlabels/pkg/db"
 	"github.com/metno/roadlabels/pkg/exttools"
+	"github.com/metno/roadlabels/pkg/handlers"
 	authandlers "github.com/myggen/wwwauth/pkg/handlers"
 	"github.com/myggen/wwwauth/pkg/userrepo"
 
@@ -563,86 +564,6 @@ func thumbsPageHandler(w http.ResponseWriter, r *http.Request, title string) {
 type camInfo struct {
 	cam        db.Camera
 	labelCount int
-}
-
-func getCamsInfo() ([]camInfo, error) {
-	cams, err := db.GetCams()
-	var camsinfo []camInfo
-	if err != nil {
-		return camsinfo, err
-	}
-
-	for i := 0; i < len(cams); i++ {
-		labelcnt, err := db.GetRoadLabelCountForCamID(cams[i].ID)
-		if err != nil {
-			return []camInfo{}, err
-		}
-		arr := strings.Split(cams[i].Location, ", ")
-
-		// massage for display
-		cams[i].Name = arr[0]
-		cams[i].Municipality = arr[1]
-
-		camInfo := camInfo{cams[i], labelcnt}
-		camsinfo = append(camsinfo, camInfo)
-	}
-	sort.Slice(camsinfo, func(i, j int) bool {
-		return camsinfo[i].cam.Municipality < camsinfo[j].cam.Municipality
-	})
-
-	return camsinfo, nil
-}
-
-// TODO: Use templates
-func camlistHandler(w http.ResponseWriter, r *http.Request, title string) {
-	user := redirectIfNotLoggedin(w, r)
-
-	cams, err := getCamsInfo()
-	if err != nil {
-		log.Printf("getCamsInfo() : %v", err)
-	}
-
-	startDate := time.Date(2023, 2, 4, 0, 0, 0, 0, time.UTC)
-
-	fmt.Fprintf(w, `<!DOCTYPE html>
-	<html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Camera list</title>
-		
-	</head>
-	<body>
-		<div style='float: right;'>Logged in as %s <a href="/%s/logout"> logout </a> </div>
-		<a href="/roadlabels">Home</a> 
-		<table border="1">
-		<tr><td style="width:6em">Camid</td><td>SVV Id</td><td>Municipality</td><td>Road No<td/><td>Name</td><td>Lat.</td><td>Lon.</td><td># of lables</td><td>Camera Status</td></tr>
-	`, user, appRoot)
-	fmt.Fprintf(w, "\n")
-
-	for i := 0; i < len(cams); i++ {
-
-		q := startDate.Format("2006/01/02/") + strconv.Itoa(cams[i].cam.ID)
-		fmt.Fprintf(w, "<tr>")
-
-		fmt.Fprintf(w, `<td>Id: %d.</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td><a href="/roadlabels/thumbs?q=%s">%s</a></td>
-						<td>%s</td>`, cams[i].cam.ID, cams[i].cam.ForeignID, cams[i].cam.Municipality, q, cams[i].cam.RoadNumber, cams[i].cam.Name)
-		fmt.Fprintf(w, `<td>%.02f</td>
-						<td>%.02f</td>
-						<td align="center">%d</td>
-						<td>%s</td>`+"\n",
-			cams[i].cam.Latitude, cams[i].cam.Longitude, cams[i].labelCount, cams[i].cam.Status)
-		fmt.Fprintf(w, "</tr>")
-
-	}
-
-	fmt.Fprintf(w, `
-		</table>
-	</body>
-</html>
-`)
 }
 
 func (es3 S3Handler) getBytes(name string) ([]byte, error) {
@@ -1328,9 +1249,15 @@ func main() {
 	}
 	templates = authandlers.Templates
 	authandlers.DbFile = *userDBPath
+	authandlers.AppRoot = appRoot
 	authandlers.SetAuthHandlers()
 
-	http.HandleFunc("/roadlabels/camlist", makeHandler(camlistHandler))
+	handlers.BuildTime = buildTime
+	handlers.Version = version
+	handlers.AppRoot = appRoot
+	handlers.Templates = templates
+
+	http.HandleFunc("/roadlabels/camlist", makeHandler(handlers.CamlistHandler))
 	http.HandleFunc("/roadlabels/allcams", makeHandler(allCamsHandler))
 	http.HandleFunc("/roadlabels/thumbs", makeHandler(thumbsPageHandler))
 	http.HandleFunc("/roadlabels/labeledthumb", makeHandler(labelThumbHandler))
@@ -1342,7 +1269,7 @@ func main() {
 	http.HandleFunc("/roadlabels/iceimagepagingapi", makeHandler(IceImagePagingHandler))
 	http.HandleFunc("/roadlabels", makeHandler(frontPageHandler))
 
-	// Serve the label database for backup and training. Nothing secret here . Could be read access for everyone
+	// Serve the label dat abase for backup and training. Nothing secret here . Could be read access for everyone
 	http.HandleFunc("/roadlabels/db", dbDownloadHandler)
 	http.HandleFunc("/roadlabels/userdb", userDBDownloadHandler)
 

@@ -17,8 +17,6 @@ github.com/klauspost/cpuid/v2 v2.1.0 h1:eyi1Ad2aNJMW95zcSbmGg7Cg6cq3ADwLpMAP96d8
 github.com/klauspost/cpuid/v2 v2.1.0/go.mod h1:RVVoqg1df56z8g3pUjL/3lE5UfnlrJX8tyFgg4nqhuY=
 github.com/mattn/go-sqlite3 v1.14.17 h1:mCRHCLDUBXgpKAqIKsaAaAsrAlbkeomtRFKXh2L6YIM=
 github.com/mattn/go-sqlite3 v1.14.17/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
-github.com/metno/frostclient-roadweather v0.0.2 h1:0Mrh8MrEqTJl4+Ytyp/NaRCD/PAm6kJRAmm+lLhHIcM=
-github.com/metno/frostclient-roadweather v0.0.2/go.mod h1:VAW2YvgljDQE1ZQHeCHvJv5k0jQm/AvRhgG44gBK4W4=
 github.com/metno/objectstore-stuff v0.0.1 h1:sHm14/5fmR0m+6sRpAhHI4eyYJCjEyU/tW+m0HZthO4=
 github.com/metno/objectstore-stuff v0.0.1/go.mod h1:uH5lWXKLeTzGBFOlQWP1kwrqcr12kD/XAmN9gHJA0iI=
 github.com/minio/md5-simd v1.1.2 h1:Gdi1DZK69+ZVMoNHRXJyNcxrMA4dSxoYHZSQbirFg34=
