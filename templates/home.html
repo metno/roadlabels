@@ -3,9 +3,6 @@
 		<head>
 			<title>{{.Title}}</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1">
-			
-
-
 		</head>
 		<body>
 		<div style='min-height: 98vh; display: flex; flex-direction: column;'>
@@ -16,8 +13,7 @@
 
 			<ul>
 				<li><a href="/roadlabels/camlist"> Camera Listing</a></li>
-				<li><a href="/roadlabels/allcams"> List of recent images from all cams</a></li>
-			
+				<li><a href="/roadlabels/allcams"> List of images from all cameras</a></li>
 			</ul> 
 
 			Helper links: <br/> 
@@ -25,16 +21,17 @@
 				<li><a href="/roadlabels/showlabels"> View annotated images</a></li>
 			</ul> 
 
-			Sample of images based on observations in frost from SVV stations with ice, water and snow detectors. Beware Could be erroneous. Failed sensors etc
+			Selection of images based on observations in frost from SVV stations with ice, water and snow detectors. Beware Could be erroneous. Failed sensors or images from SVV are the same all the time
 			<ul>
+				<li><a href="/roadlabels/frost_based_examples?class=Snow%2BIce%2BWater">Snow+Ice+Water</a></li>
+				<li><a href="/roadlabels/frost_based_examples?class=Water%2BSnow">Water+Snow</a></li>
+				<li><a href="/roadlabels/frost_based_examples?class=Water%2BIce">Water+Ice</a></li>
+				<li><a href="/roadlabels/frost_based_examples?class=Water">Water</a></li>
 				
-				<li>Wet in frost, No ice or snow</li>
-				<li>Ice and or snow. With or without water</li>
-				<li>Ice only</li>
-				<li>Dry. If snow, water and ice are zero, it is dry</li>
+				<li><a href="/roadlabels/frost_based_examples?class=Snow%2BIce">Snow+Ice</a></li>
+				<li><a href="/roadlabels/frost_based_examples?class=Snow">Snow</a></li>
 
-				<li><a href="/roadlabels/iceinfrost"> Images from stations with ice in frost</a></li>
-
+				<li><a href="/roadlabels/frost_based_examples?class=Ice">Ice</a></li>
 
 			</ul> 
 			  
@@ -139,23 +136,24 @@
 				document.location.href=location.protocol + '//' + host + "/roadlabels/showlabels?label="+ label
 			}
 			</script>
-									
-						<footer style='display: flex;
-						align-items: flex-end;
-						flex: 1 1 auto;'>
-						version {{.Version}} {{.BuildTime}}
-						</footer>
-					</div>
+		
+	</div>
+			<style type="text/css">
+				.chartBox {
+					
+					margin: auto;
+				}
+			</style>
+			
+			<footer style='display: flex; align-items: flex-end; flex: 1 1 auto;'>
+				version {{.Version}} {{.BuildTime}}
+			</footer>
+
+			
 
 
-					<style type="text/css">
-						.chartBox {
-						height:50em;
-						margin: auto;
-						}
-					</style>
+			
 
-
-
+	
 		</body>
 		</html>

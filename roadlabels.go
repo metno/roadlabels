@@ -771,7 +771,7 @@ func allCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 	user := redirectIfNotLoggedin(w, r)
 
 	//  2023-02-04: Firs reliable regular downloads
-	timestamp := time.Date(2023, 2, 4, 0, 0, 0, 0, time.UTC)
+	timestamp := time.Date(2023, 2, 4, 12, 0, 0, 0, time.UTC)
 
 	dateStr := r.URL.Query().Get("date")
 	fmt.Println("date =>", dateStr)
@@ -869,13 +869,13 @@ func allCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	fmt.Fprintf(w, "<table><tr>")
 
-	now := time.Now().UTC()
-	now = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, time.UTC)
-	now = now.Add(time.Hour * -1)
+	//now := time.Now().UTC()
+	//now = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, time.UTC)
+	//now = now.Add(time.Hour * -1)
 
-	var bucket = fmt.Sprintf("roadcams-bucket-%.02d%.02d", now.Year(), now.Month())
+	var bucket = fmt.Sprintf("roadcams-bucket-%.02d%.02d", timestamp.Year(), timestamp.Month())
 
-	destdirThumb := fmt.Sprintf("%s/%s", "roadcams", now.Format("2006/01/02"))
+	destdirThumb := fmt.Sprintf("%s/%s", "roadcams", timestamp.Format("2006/01/02"))
 	s3client, err := objectstore.NewClientWithBucket(s3endpoint, h2s3accessKey, h2s3secretKey, bucket)
 	if err != nil {
 		log.Fatalln(err)
@@ -886,7 +886,7 @@ func allCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 		pathOrig := fmt.Sprintf("%s/%0.4d/%0.2d/%0.2d/%d/%d_%s.jpg", "roadcams", timestamp.Year(), timestamp.Month(),
 			timestamp.Day(), cams[c].ID, cams[c].ID, imageTimestamp)
 
-		destpathThumb := fmt.Sprintf("%s/%d/thumbs/%d_%s.jpg", destdirThumb, cams[c].ID, cams[c].ID, now.Format("20060102T1504Z"))
+		destpathThumb := fmt.Sprintf("%s/%d/thumbs/%d_%s.jpg", destdirThumb, cams[c].ID, cams[c].ID, timestamp.Format("20060102T1504Z"))
 		bytebuf, err := s3client.GetS3ObjectBytes(destpathThumb)
 		if err != nil {
 			log.Printf("s3client.GetS3ObjectBytes(%s/%s): %v", s3client.Bucket, destpathThumb, err)
@@ -1048,18 +1048,18 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 	}
 }
 
-func iceObsHandler(w http.ResponseWriter, r *http.Request, title string) {
+func frostObsHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	pi := authandlers.NewPageInfo()
 	pi.Title = "Road Labels"
-	pi.H1 = "Road Condition Annotations"
+
 	pi.Version = version
 	pi.BuildTime = buildTime
 	pi.User.UserName = "noauth"
 
-	t, ok := templates["ice_images.html"]
+	t, ok := templates["example_images_based_on_frost.html"]
 	if !ok {
-		log.Printf("template %s not found", "ice_images.html")
+		log.Printf("template %s not found", "example_images_based_on_frost.html")
 		return
 	}
 
@@ -1076,9 +1076,21 @@ func iceObsHandler(w http.ResponseWriter, r *http.Request, title string) {
 		http.Redirect(w, r, appRoot+"/login", http.StatusFound)
 		return
 	}
+
 	pi.User.UserName = uu.UserName
+
+	class := r.URL.Query().Get("class")
+	pi.H1 = class + " in frost"
+	log.Printf("Classe req: %s", class)
+	frostObses = class2FrostObses[class]
+	fmt.Printf("LEN frostObses: %d", len(frostObses))
+
+	for key, element := range class2FrostObses {
+		fmt.Println("Key:", key, "=>", "len Element:", len(element))
+	}
+
 	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(iceObses), func(i, j int) { iceObses[i], iceObses[j] = iceObses[j], iceObses[i] })
+	rand.Shuffle(len(frostObses), func(i, j int) { frostObses[i], frostObses[j] = frostObses[j], frostObses[i] })
 	t.Execute(w, pi)
 
 }
@@ -1120,11 +1132,11 @@ func IceImagePagingHandler(w http.ResponseWriter, r *http.Request, title string)
 	var data = Data{}
 	from := (pageNo - 1) * limit
 	to := (pageNo-1)*limit + limit
-	if to > len(iceObses) {
-		to = len(iceObses)
+	if to > len(frostObses) {
+		to = len(frostObses)
 	}
 	for l := from; l < to; l++ {
-		iob := iceObses[l]
+		iob := frostObses[l]
 		refTime := iob.RefTime
 		imageTimestamp := refTime.Format("20060102T1504Z")
 		label := -1
@@ -1144,7 +1156,7 @@ func IceImagePagingHandler(w http.ResponseWriter, r *http.Request, title string)
 		elm.Desc = "road_ice_thickness"
 		elm.Label = label
 
-		elm.Value = iob.Value
+		//elm.Value = iob.Value
 
 		var bucket = fmt.Sprintf("roadcams-bucket-%.02d%.02d", refTime.Year(), refTime.Month())
 		var storeHandler = S3Handler{Prefix: bucket}
@@ -1159,7 +1171,7 @@ func IceImagePagingHandler(w http.ResponseWriter, r *http.Request, title string)
 		}
 		data.Data = append(data.Data, elm)
 	}
-	data.Total = len(iceObses)
+	data.Total = len(frostObses)
 
 	bytes, err := json.Marshal(data)
 	if err != nil {
@@ -1170,7 +1182,10 @@ func IceImagePagingHandler(w http.ResponseWriter, r *http.Request, title string)
 	fmt.Fprint(w, string(bytes))
 }
 
-var iceObses []frostclient.IceObs
+var frostObses []frostclient.ObsRoadweather
+
+// Frost data examples
+var class2FrostObses = make(map[string][]frostclient.ObsRoadweather)
 
 func main() {
 
@@ -1227,8 +1242,12 @@ func main() {
 	}
 
 	db.DBFILE = *dbPath
+	var err error
+	class2FrostObses, err = frostclient.GetObsMapForLabelApp()
 
-	iceObses = frostclient.GetIceObses()
+	if err != nil {
+		log.Fatalf("%v,", err)
+	}
 
 	t := time.Now().UTC()
 	var port = 25260
@@ -1242,7 +1261,7 @@ func main() {
 	authandlers.Files = templateFiles
 	authandlers.TemplatesDir = "templates"
 	authandlers.AppRoot = appRoot
-	err := authandlers.LoadTemplates()
+	err = authandlers.LoadTemplates()
 	if err != nil {
 		log.Printf("authandlers.LoadTemplates: %v", err)
 		os.Exit(1)
@@ -1264,7 +1283,7 @@ func main() {
 	http.HandleFunc("/roadlabels/inputlabel", makeHandler(inputLabelHandler))
 	http.HandleFunc("/roadlabels/labeledimage", makeHandler(labelImageHandler))
 	http.HandleFunc("/roadlabels/showlabels", makeHandler(showLabelsHandler))
-	http.HandleFunc("/roadlabels/iceinfrost", makeHandler(iceObsHandler))
+	http.HandleFunc("/roadlabels/frost_based_examples", makeHandler(frostObsHandler))
 	http.HandleFunc("/roadlabels/imagepagingapi", makeHandler(ImagePagingHandler))
 	http.HandleFunc("/roadlabels/iceimagepagingapi", makeHandler(IceImagePagingHandler))
 	http.HandleFunc("/roadlabels", makeHandler(frontPageHandler))

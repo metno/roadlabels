@@ -35,7 +35,7 @@
             if (count == 0 ) {
                 quoteEl.innerHTML = '<div class="row">';
             }
-            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:90%" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=${elm.Label}&obs2=-1"></img> <figcaption>${elm.Desc}:&nbsp;${elm.Value}</figcaption> </figure></a></div>`;
+            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:90%" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=${elm.Label}&obs2=-1"></img> <figcaption>${elm.Desc}</figcaption> </figure></a></div>`;
 
             if ( count %3 == 0) {
                 quoteEl.innerHTML += '</div><div class="row">';
