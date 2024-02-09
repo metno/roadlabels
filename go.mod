@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/metno/frostclient-roadweather v0.0.3
 	github.com/metno/objectstore-stuff v0.0.1
-	github.com/myggen/wwwauth v0.0.4
+	github.com/myggen/wwwauth v0.0.5
 	gocv.io/x/gocv v0.31.0
 )
 
