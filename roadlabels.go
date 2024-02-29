@@ -182,7 +182,7 @@ func inputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 	fmt.Fprintf(w, `<!DOCTYPE html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thumbnails</title>
+<title>Label page</title>
 
 
 <script src="/roadlabels/js/inputlabel.js"></script>

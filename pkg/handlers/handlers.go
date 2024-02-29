@@ -64,7 +64,7 @@ func CamlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Thumbnails</title>
+		<title>Cams list </title>
 		
 	</head>
 	<body>
@@ -120,10 +120,11 @@ func getCamsInfo() ([]camInfo, error) {
 		}
 		arr := strings.Split(cams[i].Location, ", ")
 
-		// massage for display
-		cams[i].Name = arr[0]
-		cams[i].Municipality = arr[1]
-
+		if len(arr) == 2 {
+			// massage for display
+			cams[i].Name = arr[0]
+			cams[i].Municipality = arr[1]
+		}
 		camInfo := camInfo{cams[i], labelcnt}
 		camsinfo = append(camsinfo, camInfo)
 	}

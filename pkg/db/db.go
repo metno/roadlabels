@@ -272,7 +272,7 @@ func GetCams() ([]Camera, error) {
 	}
 	defer db.Close()
 	// 36 is the stupid fisheye cam at Blidnern. Show it and not train it until we decide what to do about it
-	rows, err := db.Query("SELECT id, foreign_id, name, latitude, longitude, road_number, location, status FROM webcams where status not like \"%down%\" ")
+	rows, err := db.Query("SELECT id, foreign_id, name, latitude, longitude, road_number, location, status,municipality FROM webcams where status not like \"%down%\" ")
 
 	if err != nil {
 		return cams, err
@@ -281,7 +281,7 @@ func GetCams() ([]Camera, error) {
 
 	for rows.Next() {
 		cam := Camera{}
-		err := rows.Scan(&cam.ID, &cam.ForeignID, &cam.Name, &cam.Latitude, &cam.Longitude, &cam.RoadNumber, &cam._location, &cam.Status)
+		err := rows.Scan(&cam.ID, &cam.ForeignID, &cam.Name, &cam.Latitude, &cam.Longitude, &cam.RoadNumber, &cam._location, &cam.Status, &cam.Municipality)
 		if cam._location.Valid {
 			cam.Location = cam._location.String
 		}
