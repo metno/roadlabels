@@ -2,7 +2,7 @@
 echo "Docker.entry.sh"
 set -e
 
-#if [ ! -e  /var/lib/roadlabels/roadcams.db ]
+if [ ! -e  /var/lib/roadlabels/roadcams.db ]
 then
     cp -v /roadlabels/roadcams.db /var/lib/roadlabels/roadcams.db
 else 
