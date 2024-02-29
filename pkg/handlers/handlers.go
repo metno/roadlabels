@@ -58,7 +58,9 @@ func CamlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 		log.Printf("getCamsInfo() : %v", err)
 	}
 
-	startDate := time.Date(2023, 2, 4, 0, 0, 0, 0, time.UTC)
+	now := time.Now().UTC().Add(-24 * time.Hour)
+	startDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	//startDate := time.Date(2023, 2, 4, 0, 0, 0, 0, time.UTC)
 
 	fmt.Fprintf(w, `<!DOCTYPE html>
 	<html>

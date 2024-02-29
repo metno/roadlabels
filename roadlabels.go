@@ -400,7 +400,7 @@ func inputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 	fmt.Fprintf(w, `<button id="next" onclick="next('%s', '%d', %d, %d, '%s', '%s', '%f')" >Save and Next</button>`+"\n", pathNext, camid, inputLabel, inputLabel2, imageTimestamp, dateNextJS, temperature)
 	fmt.Fprintf(w, `
 		<p style="color:green;"> Tips:<br> Set road condition class from the keyboard by pressing 0-9. <br> Press 'n' for None (Or not click at all). Save using the left/right arrow keys</p>
-		<p style="color:green;"> Tips:<br> We start browsing from "the beginning" so move forwards (Use Save and Next)</p>
+		<p style="color:green;"> Tips:<br> We start browsing from "yesterday" so move backwards (Use Save and Prev)</p>
 	`)
 	fmt.Fprintf(w, "</footer>")
 
@@ -771,7 +771,8 @@ func allCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 	user := redirectIfNotLoggedin(w, r)
 
 	//  2023-02-04: Firs reliable regular downloads
-	timestamp := time.Date(2023, 2, 4, 12, 0, 0, 0, time.UTC)
+	now := time.Now().UTC().Add(-24 * time.Hour)
+	timestamp := time.Date(now.Year(), now.Month(), now.Day(), 12, 0, 0, 0, time.UTC)
 
 	dateStr := r.URL.Query().Get("date")
 	fmt.Println("date =>", dateStr)
