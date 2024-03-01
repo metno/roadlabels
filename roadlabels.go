@@ -537,14 +537,17 @@ func thumbsPageHandler(w http.ResponseWriter, r *http.Request, title string) {
 		bytebuf, err := storeHandler.getBytes(pathThumb)
 		if err != nil {
 			log.Printf("thumbsPageHandler.getBytess %s: %v", pathThumb, err)
-			continue
+			fmt.Fprintf(w, `<td valign="middle" ><a title="%s" href="/roadlabels/inputlabel?q=%s&cc=%d">`, imageTimestamp, pathOrig, cc)
+			fmt.Fprintf(w, `<img src="/roadlabels/nodata/no-data.png"  style="height:25vh"; border="0" /> <br>%s`, termin)
+			fmt.Fprintf(w, "</a></td>\n")
+
+		} else {
+			base64Encoding := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(bytebuf)
+
+			fmt.Fprintf(w, `<td valign="middle" ><a title="%s" href="/roadlabels/inputlabel?q=%s&cc=%d">`, imageTimestamp, pathOrig, cc)
+			fmt.Fprintf(w, `<img src="%s"  style="height:25vh"; border="0" /> <br>%s`, base64Encoding, termin)
+			fmt.Fprintf(w, "</a></td>\n")
 		}
-		base64Encoding := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(bytebuf)
-
-		fmt.Fprintf(w, `<td valign="middle" ><a title="%s" href="/roadlabels/inputlabel?q=%s&cc=%d">`, imageTimestamp, pathOrig, cc)
-		fmt.Fprintf(w, `<img src="%s"  style="height:25vh"; border="0" /> <br>%s`, base64Encoding, termin)
-		fmt.Fprintf(w, "</a></td>\n")
-
 		count++
 
 		if count%2 == 0 {

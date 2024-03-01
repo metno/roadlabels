@@ -20,33 +20,23 @@ var Version = ""
 var AppRoot = "roadlabels"
 var Templates map[string]*template.Template
 
-func redirectIfNotLoggedin(w http.ResponseWriter, r *http.Request) string {
-	pi := authandlers.NewPageInfo()
-	pi.Title = "Road Labels"
-	pi.H1 = "Road Labels"
-	pi.Version = Version
-	pi.BuildTime = BuildTime
+type Vars struct {
+	BuildTime string
+	Version   string
+	AppRoot   string
+	Templates map[string]*template.Template
+}
 
-	t, ok := Templates["home.html"]
-	if !ok {
-		log.Printf("template %s not found", "response.html")
-		return ""
-	}
+func NewHandlesHandler(
+	BuildTime string,
+	Version string,
+	AppRoot string,
+	Templates map[string]*template.Template) Vars {
+	return Vars{BuildTime, Version, AppRoot, Templates}
+}
 
-	uu, err := authandlers.IsLoggedIn(r)
-	if err != nil {
-		log.Printf("authandlers.IsLoggedIn: %v", err)
-		pi.Errors = append(pi.Errors, fmt.Sprintf("authandlers.IsLoggedIn: %v", err))
-		t.Execute(w, pi)
-		return ""
-	}
+func (t Vars) Print() {
 
-	if (uu == userrepo.User{}) {
-		log.Printf("HomeHandler: Cookie anyany.xyz_session_token does not exist ")
-		http.Redirect(w, r, AppRoot+"/login", http.StatusFound)
-		return ""
-	}
-	return uu.UserName
 }
 
 // TODO: Use templates
@@ -66,7 +56,11 @@ func CamlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+<<<<<<< Updated upstream
 		<title>Cams list </title>
+=======
+		<title>Cams List</title>
+>>>>>>> Stashed changes
 		
 	</head>
 	<body>
@@ -99,8 +93,37 @@ func CamlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 	fmt.Fprintf(w, `
 		</table>
 	</body>
-</html>
-`)
+	</html>
+	`)
+}
+
+func redirectIfNotLoggedin(w http.ResponseWriter, r *http.Request) string {
+	pi := authandlers.NewPageInfo()
+	pi.Title = "Road Labels"
+	pi.H1 = "Road Labels"
+	pi.Version = Version
+	pi.BuildTime = BuildTime
+
+	t, ok := Templates["home.html"]
+	if !ok {
+		log.Printf("template %s not found", "response.html")
+		return ""
+	}
+
+	uu, err := authandlers.IsLoggedIn(r)
+	if err != nil {
+		log.Printf("authandlers.IsLoggedIn: %v", err)
+		pi.Errors = append(pi.Errors, fmt.Sprintf("authandlers.IsLoggedIn: %v", err))
+		t.Execute(w, pi)
+		return ""
+	}
+
+	if (uu == userrepo.User{}) {
+		log.Printf("HomeHandler: Cookie anyany.xyz_session_token does not exist ")
+		http.Redirect(w, r, AppRoot+"/login", http.StatusFound)
+		return ""
+	}
+	return uu.UserName
 }
 
 type camInfo struct {
