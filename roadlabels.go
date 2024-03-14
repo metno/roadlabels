@@ -331,7 +331,7 @@ func inputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 			}
 		}
 	}
-	log.Printf("Debug1")
+
 	fmt.Fprintf(w, "<section>")
 
 	var bucket = fmt.Sprintf("roadcams-bucket-%s%s", year, month)
@@ -562,11 +562,6 @@ func thumbsPageHandler(w http.ResponseWriter, r *http.Request, title string) {
 	}
 	fmt.Fprintf(w, "</body></html>")
 	fmt.Printf("thumbsPageHandler finished\n")
-}
-
-type camInfo struct {
-	cam        db.Camera
-	labelCount int
 }
 
 func (es3 S3Handler) getBytes(name string) ([]byte, error) {
@@ -1247,8 +1242,8 @@ func main() {
 
 	db.DBFILE = *dbPath
 	var err error
-	class2FrostObses, err = frostclient.GetObsMapForLabelApp()
 
+	class2FrostObses, err = frostclient.GetObsMapForLabelApp()
 	if err != nil {
 		log.Fatalf("%v,", err)
 	}

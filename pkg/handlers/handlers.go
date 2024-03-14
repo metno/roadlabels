@@ -56,12 +56,7 @@ func CamlistHandler(w http.ResponseWriter, r *http.Request, title string) {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-<<<<<<< Updated upstream
-		<title>Cams list </title>
-=======
-		<title>Cams List</title>
->>>>>>> Stashed changes
-		
+		<title>Cams List</title>		
 	</head>
 	<body>
 		<div style='float: right;'>Logged in as %s <a href="/%s/logout"> logout </a> </div>

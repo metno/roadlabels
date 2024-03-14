@@ -79,7 +79,7 @@ func SaveOrUpdateTemp(camid int, temp float64, imageTimestamp string) error {
 
 // SaveOrUpdateRoadLabel - Save road-label, update cc label if exists.
 func SaveOrUpdateRoadLabel(camid int, label int, imageTimestamp string, userName string) error {
-	//log.Printf("DB Saving SaveOrUpdateRoadLabel camid %d, %d, %s", camid, label, imageTimestamp)
+	log.Printf("DB Saving SaveOrUpdateRoadLabel camid %d, %d, %s", camid, label, imageTimestamp)
 	db, err := sql.Open("sqlite3", DBFILE)
 
 	if err != nil {
@@ -115,13 +115,13 @@ func SaveOrUpdateRoadLabel(camid int, label int, imageTimestamp string, userName
 		if id != 0 { //Did not exist
 			return nil
 		} // else existed update:
-		stmt, err = db.Prepare("UPDATE  road_labels SET label=? WHERE camera_id=? AND image_timestamp=? AND username=?")
+		stmt, err = db.Prepare("UPDATE  road_labels SET label=? WHERE camera_id=? AND image_timestamp=?")
 
 		if err != nil {
 			return fmt.Errorf("SaveOrUpdateRoadLabel.UPDATE: %v", err)
 		}
 		defer stmt.Close()
-		_, err = stmt.Exec(label, camid, imageTimestamp, userName)
+		_, err = stmt.Exec(label, camid, imageTimestamp)
 
 		if err != nil {
 			return fmt.Errorf("SaveOrUpdateRoadLabel.UPDATEXEC: %v", err)
