@@ -115,13 +115,13 @@ func SaveOrUpdateRoadLabel(camid int, label int, imageTimestamp string, userName
 		if id != 0 { //Did not exist
 			return nil
 		} // else existed update:
-		stmt, err = db.Prepare("UPDATE  road_labels SET label=? WHERE camera_id=? AND image_timestamp=?")
+		stmt, err = db.Prepare("UPDATE  road_labels SET label=?, username=? WHERE camera_id=? AND image_timestamp=?")
 
 		if err != nil {
 			return fmt.Errorf("SaveOrUpdateRoadLabel.UPDATE: %v", err)
 		}
 		defer stmt.Close()
-		_, err = stmt.Exec(label, camid, imageTimestamp)
+		_, err = stmt.Exec(label, userName, camid, imageTimestamp)
 
 		if err != nil {
 			return fmt.Errorf("SaveOrUpdateRoadLabel.UPDATEXEC: %v", err)
