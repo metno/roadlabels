@@ -156,10 +156,10 @@ func main() {
 	db.DBFILE = *dbPath
 	var err error
 
-	//class2FrostObses, err = frostclient.GetObsMapForLabelApp()
-	//if err != nil {
-	//	log.Fatalf("%v,", err)
-	//}
+	class2FrostObses, err = frostclient.GetObsMapForLabelApp()
+	if err != nil {
+		log.Fatalf("%v,", err)
+	}
 
 	t := time.Now().UTC()
 	var port = 25260
