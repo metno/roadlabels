@@ -19,10 +19,6 @@ import (
 	authandlers "github.com/myggen/wwwauth/pkg/handlers"
 )
 
-// TODO:
-// move handlers to pkg/handlers
-// Date picker
-
 var appHome = ""
 var buildTime = ""
 var version = ""
@@ -33,9 +29,6 @@ var (
 
 	//go:embed css/** js/**
 	staticFiles embed.FS
-
-	////go:embed css/**
-	//cssFiles embed.FS
 
 	templates map[string]*template.Template
 	appRoot   = "roadlabels"

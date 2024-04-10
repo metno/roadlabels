@@ -83,23 +83,6 @@ func (es3 S3Handler) objectExists(name string) (bool, error) {
 	return objExists, nil
 }
 
-type FSHandler struct {
-	Prefix string // image root directory "/lustre/storeB/project/metproduction/products/webcams"
-}
-
-func (epx FSHandler) objectExists(prefix string, path string) (bool, error) {
-	_, err := os.Stat(prefix + "/" + path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false, nil
-		} else {
-			return false, err
-		}
-	}
-	return true, nil
-
-}
-
 func (es3 S3Handler) getBytes(name string) ([]byte, error) {
 	s3client, err := objectstore.NewClientWithBucket(S3endpoint, H2s3accessKey, H2s3secretKey, es3.Prefix)
 	if err != nil {
@@ -1225,8 +1208,4 @@ func getCamsInfo() ([]camInfo, error) {
 	})
 
 	return camsinfo, nil
-}
-
-func init() {
-	fmt.Printf("handlers.init()\n")
 }
