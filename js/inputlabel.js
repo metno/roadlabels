@@ -109,7 +109,7 @@ function next(next_image, saveID, saveCC, label2, saveStamp, saveStampJS, temp) 
         
         date  =new Date(saveStampJS);
         dt = new Date()
-        dt.setHours(dt.getHours() - 1);
+        dt.setHours(dt.getHours());
         
         x = new Date('2013-05-23T13:13Z');
         console.log("Fox " + x)	;
