@@ -545,8 +545,12 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 		fmt.Fprintf(w, `<a href="/roadlabels/labeledimage?q=%s&cc=%d&obs2=%d"> <img  style="height:50vh"; src=/roadlabels/labeledimage?q=%s&cc=%d&obs2=%d border="0"></img></a>`, path, inputLabel, inputLabel2, path, inputLabel, inputLabel2)
 	}
 
-	temperature, err := exttools.GetTemp(date, float32(camera.Latitude), float32(camera.Longitude))
-	if err != nil {
+	temperature := -314.15
+	var err1 error
+	if date.Compare(time.Now().UTC().Add(-1*time.Hour)) < 0 { // Else temp not available yet .
+		temperature, err1 = exttools.GetTemp(date, float32(camera.Latitude), float32(camera.Longitude))
+	}
+	if err1 != nil {
 		log.Printf("Error exttools.GetTemp: %v", err)
 	}
 
