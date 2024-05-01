@@ -91,6 +91,7 @@ def getvarval(forecast_file, lat, lon, reftime, variable):
 
 
 def print_t2m(reftime_long, lat, lon ):
+    
     analysis_file = get_forecast_file(reftime_long)
     if analysis_file is None:
         raise RuntimeError("No suitable analysis file found")

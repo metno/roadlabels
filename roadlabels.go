@@ -210,7 +210,7 @@ func main() {
 	http.Handle("/roadlabels/css/", http.StripPrefix("/roadlabels/", http.FileServer(http.FS(staticFiles))))
 
 	// TODO: Read from objectstore
-	http.Handle("/roadlabels/nodata/", http.StripPrefix("/roadlabels/nodata/", http.FileServer(http.Dir("/lustre/storeB/project/metproduction/products/webcams"))))
+	http.Handle("/roadlabels/nodata/", http.StripPrefix("/roadlabels/nodata/", http.FileServer(http.Dir("/lustre/storeB/project/metproduction/static_data/nodata"))))
 	http.HandleFunc("/", redirect)
 
 	log.Fatal(http.ListenAndServe(portStr, nil))

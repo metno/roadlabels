@@ -547,7 +547,7 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	temperature := -314.15
 	var err1 error
-	if date.Compare(time.Now().UTC().Add(-1*time.Hour)) < 0 { // Else temp not available yet .
+	if date.Compare(time.Now().UTC().Add(-1*time.Hour)) < 0 { // Else temp from Nordic analysis not available yet .
 		temperature, err1 = exttools.GetTemp(date, float32(camera.Latitude), float32(camera.Longitude))
 	}
 	if err1 != nil {

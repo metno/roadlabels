@@ -23,11 +23,14 @@ func GetTemp(reftime time.Time, lat float32, lon float32) (float64, error) {
 	}
 	pythonCode := fmt.Sprintf(`import ncvars; ncvars.analysis_dir="%s"; import sys; ncvars.print_t2m(%d, %f, %f);`, AnalysisDir,
 		datelong, lat, lon)
+
+	log.Printf("pythoncode: %s", pythonCode)
 	cout, cerr, err := RunCommand("python3", "-c", pythonCode)
 	if err != nil {
+		log.Printf("%s %s\n", err, cerr)
 		return -273.15, fmt.Errorf("%v. %s", err, cerr)
 	}
-	fmt.Printf("%s\n", cerr)
+
 	v, err := strconv.ParseFloat(strings.TrimSuffix(cout, "\n"), 64)
 	return v, err
 }

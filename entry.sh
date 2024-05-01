@@ -16,4 +16,4 @@ else
     echo /var/lib/roadlabels/users.db. Skip copy 
 fi
 
-/app/roadlabels
+roadlabels
