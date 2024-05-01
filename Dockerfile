@@ -45,7 +45,7 @@ RUN apt-get -y install apt-utils pkg-config python3-netcdf4 python3-pyproj curl
 COPY --from=build-app /usr/local /usr/local
 RUN ldconfig -v
 COPY --from=build-app /tmp/roadlabels/exttools /app/exttools
-ENV PYTHONPATH=/app/extools
+ENV PYTHONPATH=/app/exttools
 ENV HDF5_USE_FILE_LOCKING=FALSE
 RUN mkdir -p /lustre
 ADD entry.sh /usr/local/bin/entry.sh
