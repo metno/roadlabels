@@ -1,4 +1,4 @@
-DOCKER_IMAGE="registry.met.no/modellprod/roadlabels:v0.12.7"
+DOCKER_IMAGE="registry.met.no/modellprod/roadlabels:v0.12.9"
 
 build:
 	go build -ldflags "-X main.h2s3accessKey=$(S3AccessKey) -X main.h2s3secretKey=$(S3SecretKey) -X main.buildTime=$$(date +'%Y-%m-%dT%H:%MZ') -X main.version=$$(git log --pretty=format:'%h' -n 1)" -o roadlabels roadlabels.go
