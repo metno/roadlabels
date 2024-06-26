@@ -19,31 +19,32 @@
         
         return await response.json();
     }
-
+    var totCount = 0;
     // show the quotes
     const showQuotes = (elements) => {
 
         count = 0;
+        
         tot = elements.length;
 
         elements.forEach(elm => {
             count++;
-
+            totCount++;
             const quoteEl = document.createElement('blockquote');
             quoteEl.classList.add('quote');
 
             if (count == 0 ) {
                 quoteEl.innerHTML = '<div class="row">';
             }
-            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:90%" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=${elm.Label}&obs2=-1"></img> <figcaption></figcaption> </figure></a></div>`;
-
-            if ( count %3 == 0) {
+            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:240px" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=${elm.Label}&obs2=-1"></img> <figcaption></figcaption> </figure></a></div>`;
+            //console.log("count" + count + " tot: " + tot);
+            
+            if ( totCount %4 == 0) {
                 quoteEl.innerHTML += '</div><div class="row">';
             }
-          
+           
             if (tot == count ) {
                 console.log("count" + count + " tot: " + tot);
-              
                 quoteEl.innerHTML += '</div>';
             }
     

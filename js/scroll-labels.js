@@ -35,12 +35,12 @@
             if (count == 0 ) {
                 quoteEl.innerHTML = '<div class="row">';
             }
-            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:90%" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=-1&obs2=-1"></img> <figcaption>${elm.Label}&nbsp;${elm.Desc}</figcaption> </figure></a></div>`;
+            quoteEl.innerHTML += `<div class="column"><a href="/roadlabels/inputlabel?q=${elm.PathBig}"> <figure><img style="width:240px" src="/roadlabels/labeledthumb?q=${elm.PathThumb}&cc=-1&obs2=-1"></img> <figcaption>${elm.Label}&nbsp;${elm.Desc}</figcaption> </figure></a></div>`;
 
-            if ( count %3 == 0) {
+            if ( count %4 == 0) {
                 quoteEl.innerHTML += '</div><div class="row">';
             }
-          
+            //console.log("count" + count + " tot: " + tot);
             if (tot == count ) {
                 console.log("count" + count + " tot: " + tot);
               
@@ -87,7 +87,7 @@
             } finally {
                 hideLoader();
             }
-        }, 1500);
+        }, 500);
 
     };
 

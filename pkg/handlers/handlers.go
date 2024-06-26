@@ -547,6 +547,7 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	temperature := -314.15
 	var err1 error
+
 	if date.Compare(time.Now().UTC().Add(-1*time.Hour)) < 0 { // Else temp from Nordic analysis not available yet .
 		temperature, err1 = exttools.GetTemp(date, float32(camera.Latitude), float32(camera.Longitude))
 	}
@@ -883,9 +884,7 @@ func AllCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 	<script src="/roadlabels/js/flatpickr.js"></script>
 
 	<style>
-	img {
-		max-width: 33%%;
-	  }
+	
 	</style>
 
 	<script>
@@ -913,7 +912,7 @@ func AllCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 	<div style='float: right;'>Logged in as %s <a href="/%s/logout"> logout </a> </div>
 	<a href="/roadlabels">Home</a> Camcount: %d, Date: <input type="text" value="%s" id="pickadate"  data-utc=true class="pickadate" onchange="reloadAllcams()" />UTC +0`, user, AppRoot, len(cams), timestamp.Format("2006-01-02 15:04"))
 
-	fmt.Fprintf(w, `<br/><a href="/roadlabels/allcams?date=%s&sortBy=%s"><< Prev Date </a> | <a href="/roadlabels/allcams?date=%s&sortBy=%s">Next Date >> </a>    
+	fmt.Fprintf(w, `<br/><a href="/roadlabels/allcams?date=%s&sortBy=%s">&lt; &lt;  Prev Date </a> | <a href="/roadlabels/allcams?date=%s&sortBy=%s">Next Date &gt; &gt;</a>    
 	
 	
 	<script>
@@ -946,15 +945,16 @@ func AllCamsHandler(w http.ResponseWriter, r *http.Request, title string) {
 		bytebuf, err := s3client.GetS3ObjectBytes(destpathThumb)
 		if err != nil {
 			log.Printf("s3client.GetS3ObjectBytes(%s/%s): %v", s3client.Bucket, destpathThumb, err)
+			fmt.Fprintf(w, `<td>No data</td>`)
+		} else {
+
+			base64Encoding := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(bytebuf)
+			fmt.Fprintf(w, `<td><a href="/roadlabels/inputlabel?q=%s"" ><img   src=%s /><br/>%s, </br>Road:, %s SVV ID: %s</a> </td>`+"\n",
+				pathOrig, base64Encoding, cams[c].Name, cams[c].RoadNumber, cams[c].ForeignID)
 
 		}
-
-		base64Encoding := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(bytebuf)
-		fmt.Fprintf(w, `<td><a href="/roadlabels/inputlabel?q=%s"" ><img src=%s /><br/>%s, </br>Road:, %s SVV ID: %s</a> </td>`+"\n",
-			pathOrig, base64Encoding, cams[c].Name, cams[c].RoadNumber, cams[c].ForeignID)
 		count++
-
-		if count%3 == 0 {
+		if count%4 == 0 {
 			fmt.Fprintf(w, "</tr><tr>")
 		}
 
@@ -1087,7 +1087,9 @@ func IceImagePagingHandler(w http.ResponseWriter, r *http.Request, title string)
 		}
 		data.Data = append(data.Data, elm)
 	}
+
 	data.Total = len(FrostObses)
+	log.Printf("IceImagePagingHandler data.Total: %d", data.Total)
 
 	bytes, err := json.Marshal(data)
 	if err != nil {

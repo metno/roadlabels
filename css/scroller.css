@@ -71,7 +71,7 @@ blockquote {
   
 .column {
     float: left;
-    width: 33.0%;
+    /*width: 33.0%;*/
     padding: 5px;
   }
   
