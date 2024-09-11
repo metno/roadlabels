@@ -13,10 +13,6 @@ function reloadPage(camid){
     window.location.href = url;
 }
 
-
-
-
-
 var obstype = "none";
 document.addEventListener('keydown', function(event) {
     
@@ -97,12 +93,6 @@ window.onload=function() {
     for (var i = 0; i < radios.length; i++) {
         radios[i].onclick=radioClicked;
     }
-    /*
-    var radios2 = document.forms[0].elements["obs2"];
-    for (var i = 0; i < radios2.length; i++) {
-        radios2[i].onclick=radioClicked;
-    }
-    */
 }
 function next(next_image, saveID, saveCC, label2, saveStamp, saveStampJS, temp) {
         
@@ -110,12 +100,6 @@ function next(next_image, saveID, saveCC, label2, saveStamp, saveStampJS, temp) 
         date  =new Date(saveStampJS);
         dt = new Date()
         dt.setHours(dt.getHours());
-        
-        x = new Date('2013-05-23T13:13Z');
-        console.log("Fox " + x)	;
-
-        console.log("Fox12  date " + date);
-        console.log("Fox12  now " + dt);
 
         if (date >= dt) {
             alert("No pictures from the future yet (" + saveStampJS + ")");
@@ -131,9 +115,5 @@ function prev(prev_image, saveID, saveCC, label2, saveStamp, temp) {
         u = window.location.href.split('?')[0];
         
         window.location.href = u + "?q=" + prev_image + "&saveID=" + saveID + "&saveCC=" + saveCC + "&saveStamp=" + saveStamp + "&label2="  + label2 + "&temp=" + temp ;
-        //document.body.style.cursor  = 'wait';
 }
 
-document.addEventListener("DOMContentLoaded", function(event) {
-        //
-});

@@ -156,6 +156,7 @@ func main() {
 
 	t := time.Now().UTC()
 	var port = 25260
+	//var port = 25261
 	var portStr = fmt.Sprintf(":%d", port)
 
 	log.Printf("Starting at %s port: %d\n", t.Format("20060102T150405Z"), port)

@@ -106,18 +106,18 @@ func getCaminfo(camera db.Camera) string {
 		camera.ID, camera.ForeignID, camera.Name, camera.Latitude, camera.Longitude)
 }
 
-func getPathNext(date time.Time, path string) string {
+func getPathNext(date time.Time, path string, numHours int) string {
 
-	nextd := date.Add(6 * time.Hour)
+	nextd := date.Add(time.Duration(numHours) * time.Hour)
 
 	pathNext := strings.Replace(path, date.Format("20060102T1504Z"), nextd.Format("20060102T1504Z"), -1)
 	pathNext = strings.Replace(pathNext, date.Format("2006/01/02"), nextd.Format("2006/01/02"), -1)
 	return pathNext
 }
 
-func getPathPrev(date time.Time, path string) string {
+func getPathPrev(date time.Time, path string, numHours int) string {
 	pathPrev := ""
-	prevd := date.Add(-6 * time.Hour)
+	prevd := date.Add(-time.Duration(numHours) * time.Hour)
 
 	pathPrev = strings.Replace(path, date.Format("20060102T1504Z"), prevd.Format("20060102T1504Z"), -1)
 	pathPrev = strings.Replace(pathPrev, date.Format("2006/01/02"), prevd.Format("2006/01/02"), -1)
@@ -467,10 +467,8 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 	fmt.Fprintf(w, `&nbsp; Date: <input type="text" value="%s" id="pickadate"  data-utc=true class="pickadate" onchange="reloadPage(%d)" /> <br/><br/>`,
 		date.Format("2006-01-02T15:04:05Z"), camid)
 
-	pathNext := getPathNext(date, path)
-
-	pathPrev := getPathPrev(date, path)
-
+	pathNext := getPathNext(date, path, 6)
+	pathPrev := getPathPrev(date, path, 6)
 	imageTimestamp := date.Format("20060102T1504Z")
 
 	// I am not able to get Javascript to parse the above format :-(
@@ -547,6 +545,7 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	temperature := -314.15
 	var err1 error
+	_ = err1
 
 	if date.Compare(time.Now().UTC().Add(-1*time.Hour)) < 0 { // Else temp from Nordic analysis not available yet .
 		temperature, err1 = exttools.GetTemp(date, float32(camera.Latitude), float32(camera.Longitude))
@@ -555,8 +554,15 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 		log.Printf("Error exttools.GetTemp: %v", err)
 	}
 
-	fmt.Fprintf(w, `<br/>Termin: %s &nbsp; Temp: %.2f&#8451; &nbsp;%s<br/><br/>`,
-		date.Format("2006-01-02T15:04:05Z"), temperature, labeledBy)
+	pathNextHour := getPathNext(date, path, 1)
+	pathPrevHour := getPathPrev(date, path, 1)
+	nextHourLink := fmt.Sprintf(`<a href="/roadlabels/inputlabel?q=%s">Next hour</a>`, pathNextHour)
+	if date.Compare(time.Now().UTC()) > 0 {
+		nextHourLink = ""
+	}
+	log.Printf("NextH: %s, PrevH: %s", pathNextHour, pathPrevHour)
+	fmt.Fprintf(w, `<br/>Termin: %s &nbsp; Temp: %.2f&#8451; &nbsp;%s &nbsp;&nbsp; <a href="/roadlabels/inputlabel?q=%s">Prev hour</a> &nbsp;&nbsp; %s <br/><br/>`,
+		date.Format("2006-01-02T15:04:05Z"), temperature, labeledBy, pathPrevHour, nextHourLink)
 	fmt.Fprintf(w, "</section>")
 
 	fmt.Fprintf(w, `
@@ -595,8 +601,8 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	fmt.Fprintf(w, `</div>`)
 	fmt.Fprintf(w, "<footer>")
-	fmt.Fprintf(w, `<button id="prev" onclick="prev('%s', '%d', %d, %d, '%s', '%f')" >Save and Prev</button>`+"\n", pathPrev, camid, inputLabel, inputLabel2, imageTimestamp, temperature)
-	fmt.Fprintf(w, `<button id="next" onclick="next('%s', '%d', %d, %d, '%s', '%s', '%f')" >Save and Next</button>`+"\n", pathNext, camid, inputLabel, inputLabel2, imageTimestamp, dateNextJS, temperature)
+	fmt.Fprintf(w, `<button id="prev" onclick="prev('%s', '%d', %d, %d, '%s', '%f')" >Save and Prev (-6hrs)</button>`+"\n", pathPrev, camid, inputLabel, inputLabel2, imageTimestamp, temperature)
+	fmt.Fprintf(w, `<button id="next" onclick="next('%s', '%d', %d, %d, '%s', '%s', '%f')" >Save and Next (+6 hrs)</button>`+"\n", pathNext, camid, inputLabel, inputLabel2, imageTimestamp, dateNextJS, temperature)
 	fmt.Fprintf(w, `
 		<p style="color:green;"> Tips:<br> Set road condition class from the keyboard by pressing 0-9. <br> Press 'n' for None (Or not click at all). Save using the left/right arrow keys</p>
 		<p style="color:green;"> Tips:<br> We start browsing from "yesterday" so move backwards (Use Save and Prev)</p>
