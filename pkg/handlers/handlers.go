@@ -532,12 +532,12 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 	exists, err := storeHandler.objectExists(path)
 	if err != nil {
 		log.Printf("Could not determine whether %s exists or not: %v", path, err)
-		path = "/roadlabels/nodata/no-data.png"
-		fmt.Fprintf(w, `<img width=640 height=480 src="%s" border="0"></img>`, path)
+		pathNodata := "/roadlabels/nodata/no-data.png"
+		fmt.Fprintf(w, `<img width=640 height=480 src="%s" border="0"></img>`, pathNodata)
 	} else if !exists {
 		log.Printf("Does not exist: %s", path)
-		path = "/roadlabels/nodata/no-data.png"
-		fmt.Fprintf(w, `<img width=640 height=480 src="%s" border="0"></img>`, path)
+		pathNodata := "/roadlabels/nodata/no-data.png"
+		fmt.Fprintf(w, `<img width=640 height=480 src="%s" border="0"></img>`, pathNodata)
 
 	} else {
 		fmt.Fprintf(w, `<a href="/roadlabels/labeledimage?q=%s&cc=%d&obs2=%d"> <img  style="height:50vh"; src=/roadlabels/labeledimage?q=%s&cc=%d&obs2=%d border="0"></img></a>`, path, inputLabel, inputLabel2, path, inputLabel, inputLabel2)
@@ -556,13 +556,14 @@ func InputLabelHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 	pathNextHour := getPathNext(date, path, 1)
 	pathPrevHour := getPathPrev(date, path, 1)
-	nextHourLink := fmt.Sprintf(`<a href="/roadlabels/inputlabel?q=%s">Next hour</a>`, pathNextHour)
+	nextHourLink := fmt.Sprintf(`<a href="/roadlabels/inputlabel?q=%s&saveID=%d&saveCC=%d&saveStamp=%s&label2=-1&temp=%f">Save and Next hour</a>`, pathNextHour, camid, inputLabel, imageTimestamp, temperature)
+	prevHourLink := fmt.Sprintf(`<a href="/roadlabels/inputlabel?q=%s&saveID=%d&saveCC=%d&saveStamp=%s&label2=-1&temp=%f">Save and Previous hour</a>`, pathPrevHour, camid, inputLabel, imageTimestamp, temperature)
 	if date.Compare(time.Now().UTC()) > 0 {
 		nextHourLink = ""
 	}
-	log.Printf("NextH: %s, PrevH: %s", pathNextHour, pathPrevHour)
-	fmt.Fprintf(w, `<br/>Termin: %s &nbsp; Temp: %.2f&#8451; &nbsp;%s &nbsp;&nbsp; <a href="/roadlabels/inputlabel?q=%s">Prev hour</a> &nbsp;&nbsp; %s <br/><br/>`,
-		date.Format("2006-01-02T15:04:05Z"), temperature, labeledBy, pathPrevHour, nextHourLink)
+
+	fmt.Fprintf(w, `<br/>Termin: %s &nbsp; Temp: %.2f&#8451; &nbsp;&nbsp;%s &nbsp;&nbsp; %s  &nbsp;&nbsp; %s <br/><br/>`,
+		date.Format("2006-01-02T15:04:05Z"), temperature, prevHourLink, nextHourLink, labeledBy)
 	fmt.Fprintf(w, "</section>")
 
 	fmt.Fprintf(w, `
