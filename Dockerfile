@@ -1,5 +1,5 @@
 # FIRST STAGE:  build the app.
-FROM registry.met.no/baseimg/ubuntu:22.04 AS build-app
+FROM registry.met.no/baseimg/ubuntu:24.04 AS build-app
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get -y upgrade && apt-get -y dist-upgrade
@@ -8,20 +8,20 @@ RUN apt-get -y install apt-utils pkg-config curl git
 WORKDIR /build/app
 
 RUN apt-get -y install cmake g++ wget unzip build-essential
-RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.1.zip
-RUN wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.8.1.zip
+RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.12.0.zip
+RUN wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.12.0.zip
 RUN unzip opencv.zip
 RUN unzip opencv_contrib.zip
 
 RUN mkdir -p build
 WORKDIR /build/app/build
-RUN cmake -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-4.8.1/
+RUN cmake -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-4.12.0/
 RUN cmake --build .
 RUN make install
 RUN ldconfig -v
 
 ENV GOPATH=/go
-RUN curl -L https://go.dev/dl/go1.21.1.linux-amd64.tar.gz | tar xz --directory /usr/local
+RUN curl -L https://go.dev/dl/go1.25.3.linux-amd64.tar.gz | tar xz --directory /usr/local
 ENV PATH="/go/bin:/usr/local/go/bin:${PATH}"
 
 RUN ldconfig -v
@@ -35,7 +35,7 @@ ENV S3AccessKey $S3AccessKey
 RUN go mod tidy && make build && make install
 
 # Second stage. Install 
-FROM registry.met.no/baseimg/ubuntu:22.04
+FROM registry.met.no/baseimg/ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
