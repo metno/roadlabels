@@ -1,6 +1,6 @@
 module github.com/metno/roadlabels
 
-go 1.21
+go 1.25.0
 
 //replace github.com/metno/frostclient-roadweather => /home/espenm/space/projects/frostclient-roadweather
 //replace github.com/metno/frostclient-roadweather => /home/espenm/projects/frostclient-roadweather
@@ -28,10 +28,10 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
-	golang.org/x/crypto v0.7.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/net v0.54.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 )
